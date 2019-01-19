@@ -17,6 +17,36 @@ app.use(express.static('public'));
 app.get("/", function (req, res) {
   res.sendFile(__dirname + '/views/index.html');
 });
+app.get("/api/timestamp",function(req,res){
+  let curTime = new Date;
+  res.json({"unix": curTime.getTime(),"uts": curTime.toUTCString()}
+)});
+app.get("/api/timestamp/:digit_string",function(req,res){
+const request =  req.params.digit_string.replace('/api/timestamp/','');
+  
+    console.log(request);
+    let reg = /^\d+$/;
+    if(reg.test(request))
+    {
+      console.log("digit");
+      let d = new Date(parseInt(request,10));
+      if(!isNaN(d.getTime()))
+    {
+      res.json({"unix": d.getTime(),"utc": d.toUTCString()});
+    }
+    else res.json({"unix": null, "utc" : "Invalid Date" });
+      
+    }
+   else{
+     console.log("non digit");
+    let d = new Date(request);
+    if(!isNaN(d.getTime()))
+    {
+      res.json({"unix": d.getTime(),"utc": d.toUTCString()});
+    }
+    else res.json({"unix": null, "utc" : "Invalid Date" });}
+
+});
 
 
 // your first API endpoint... 
